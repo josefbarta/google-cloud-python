@@ -807,18 +807,24 @@ class Row(object):
         ]
         return items
 
-    def dict(self):
+    def get(self, key, default = None):
         """
-        Return row as a dict object:
-        >>> Row(('a', 'b'), {'x': 0, 'y': 1}).dict()
-        {'x': 'a', 'y': 'b'}
+        Return value under specified key
+        Defaults to None or specified default
+        if key does not exist:
+        >>> Row(('a', 'b'), {'x': 0, 'y': 1}).get('x')
+        'a'
+        >>> Row(('a', 'b'), {'x': 0, 'y': 1}).get('z')
+        None
+        >>> Row(('a', 'b'), {'x': 0, 'y': 1}).get('z', '')
+        ''
+        >>> Row(('a', 'b'), {'x': 0, 'y': 1}).get('z', default = '')
+        ''
         """
-        data = {
-            k: self._xxx_values[i]
-            for k, i
-            in self._xxx_field_to_index.items()
-        }
-        return data
+        index = self._xxx_field_to_index.get(key)
+        if index is None:
+            return default
+        return values[index]
 
     def __getattr__(self, name):
         value = self._xxx_field_to_index.get(name)
